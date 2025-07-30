@@ -1,0 +1,26 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at 12:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repo
+      uses: actions/checkout@v3
+
+    - name: Append timestamp to log.txt
+      run: |
+        echo "Updated on $(date)" >> log.txt
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'actions@github.com'
+        git add log.txt
+        git commit -m "Daily update: $(date)" || echo "No changes"
+        git push
